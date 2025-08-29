@@ -177,13 +177,17 @@ void lock_votable(struct votable *votable)
 {
 	mutex_lock(&votable->vote_lock);
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(lock_votable);
+#endif
 
 void unlock_votable(struct votable *votable)
 {
 	mutex_unlock(&votable->vote_lock);
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(unlock_votable);
+#endif
 
 /**
  * is_override_vote_enabled() -
@@ -202,7 +206,9 @@ bool is_override_vote_enabled_locked(struct votable *votable)
 
 	return votable->override_result != -EINVAL;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(is_override_vote_enabled_locked);
+#endif
 
 bool is_override_vote_enabled(struct votable *votable)
 {
@@ -217,7 +223,9 @@ bool is_override_vote_enabled(struct votable *votable)
 
 	return enable;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(is_override_vote_enabled);
+#endif
 
 /**
  * is_client_vote_enabled() -
@@ -245,7 +253,9 @@ bool is_client_vote_enabled_locked(struct votable *votable,
 
 	return votable->votes[client_id].enabled;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(is_client_vote_enabled_locked);
+#endif
 
 bool is_client_vote_enabled(struct votable *votable, const char *client_str)
 {
@@ -259,7 +269,9 @@ bool is_client_vote_enabled(struct votable *votable, const char *client_str)
 	unlock_votable(votable);
 	return enabled;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(is_client_vote_enabled);
+#endif
 
 /**
  * get_client_vote() -
@@ -290,7 +302,9 @@ int get_client_vote_locked(struct votable *votable, const char *client_str)
 
 	return votable->votes[client_id].value;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(get_client_vote_locked);
+#endif
 
 int get_client_vote(struct votable *votable, const char *client_str)
 {
@@ -304,7 +318,9 @@ int get_client_vote(struct votable *votable, const char *client_str)
 	unlock_votable(votable);
 	return value;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(get_client_vote);
+#endif
 
 /**
  * get_effective_result() -
@@ -336,7 +352,9 @@ int get_effective_result_locked(struct votable *votable)
 
 	return votable->effective_result;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(get_effective_result_locked);
+#endif
 
 int get_effective_result(struct votable *votable)
 {
@@ -350,7 +368,9 @@ int get_effective_result(struct votable *votable)
 	unlock_votable(votable);
 	return value;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(get_effective_result);
+#endif
 
 /**
  * get_effective_client() -
@@ -383,7 +403,9 @@ const char *get_effective_client_locked(struct votable *votable)
 
 	return get_client_str(votable, votable->effective_client_id);
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(get_effective_client_locked);
+#endif
 
 const char *get_effective_client(struct votable *votable)
 {
@@ -397,7 +419,9 @@ const char *get_effective_client(struct votable *votable)
 	unlock_votable(votable);
 	return client_str;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(get_effective_client);
+#endif
 
 /**
  * vote() -
@@ -511,7 +535,9 @@ out:
 	unlock_votable(votable);
 	return rc;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(vote);
+#endif
 
 /**
  * vote_override() -
@@ -566,7 +592,9 @@ out:
 	unlock_votable(votable);
 	return rc;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(vote_override);
+#endif
 
 int rerun_election(struct votable *votable)
 {
@@ -586,7 +614,9 @@ int rerun_election(struct votable *votable)
 	unlock_votable(votable);
 	return rc;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(rerun_election);
+#endif
 
 struct votable *find_votable(const char *name)
 {
@@ -615,7 +645,9 @@ out:
 	else
 		return NULL;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(find_votable);
+#endif
 
 static int force_active_get(void *data, u64 *val)
 {
@@ -818,7 +850,9 @@ struct votable *create_votable(const char *name,
 
 	return votable;
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(create_votable);
+#endif
 
 void destroy_votable(struct votable *votable)
 {
@@ -840,4 +874,6 @@ void destroy_votable(struct votable *votable)
 	kfree(votable->name);
 	kfree(votable);
 }
+#ifndef CONFIG_ARCH_XIAOMI
 EXPORT_SYMBOL_GPL(destroy_votable);
+#endif

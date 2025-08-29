@@ -509,6 +509,11 @@ config ARCH_XGENE
 	help
 	  This enables support for AppliedMicro X-Gene SOC Family
 
+config ARCH_XIAOMI
+	bool "Xiaomi Platform"
+	help
+	  This enables support for the Xiaomi Platform.
+
 config ARCH_ZYNQMP
 	bool "Xilinx ZynqMP Family"
 	help
