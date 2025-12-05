@@ -140,3 +140,6 @@ wcd_usbss_i2c-y += wcd-usbss-tables.o
 wcd_usbss_i2c-y += wcd-usbss-utils.o
 wcd_usbss_i2c-y += wcd939x-i2c.o
 obj-$(CONFIG_QCOM_SAIL_MAILBOX) += qcom-sail-mbox.o
+ifdef CONFIG_ARCH_XIAOMI
+obj-m += serial_num.o
+endif
