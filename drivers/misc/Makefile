@@ -67,3 +67,6 @@ obj-$(CONFIG_PROFILER)		+= profiler.o
 obj-$(CONFIG_QRC)		+= qrc/
 obj-$(CONFIG_HDMI_INPUT_MUX)	+= hdmi_input_mux.o
 obj-$(CONFIG_SIMTRAY_STATUS) += simtray/
+ifdef CONFIG_ARCH_XIAOMI
+obj-m                         += bootinfo.o
+endif
