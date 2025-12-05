@@ -2644,7 +2644,7 @@ static int wusb3801_probe(struct i2c_client *client,
 #endif /*__MEDIATEK_PLATFORM__*/
 	int ret = 0;
 	int ret1 = 0;
-	static probe_cnt = 0;
+	static int probe_cnt = 0;
 	struct iio_dev *indio_dev = NULL;
 
 	if (probe_cnt == 0) {

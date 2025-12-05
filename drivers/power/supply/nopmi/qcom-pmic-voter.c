@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2015-2017, 2019-2020, The Linux Foundation. All rights reserved.
- * Copyright (c) 2022, 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
 #include <linux/debugfs.h>
@@ -11,8 +11,16 @@
 #include <linux/printk.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+#include <linux/module.h>
 
 #include <linux/pmic-voter.h>
+
+#include <linux/err.h>
+#include <linux/seq_file.h>
+#include <linux/debugfs.h>
+#include <linux/ipc_logging.h>
+#include <linux/printk.h>
+
 
 #define NUM_MAX_CLIENTS		32
 #define DEBUG_FORCE_CLIENT	"DEBUG_FORCE_CLIENT"
@@ -177,17 +185,13 @@ void lock_votable(struct votable *votable)
 {
 	mutex_lock(&votable->vote_lock);
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(lock_votable);
-#endif
 
 void unlock_votable(struct votable *votable)
 {
 	mutex_unlock(&votable->vote_lock);
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(unlock_votable);
-#endif
 
 /**
  * is_override_vote_enabled() -
@@ -206,9 +210,7 @@ bool is_override_vote_enabled_locked(struct votable *votable)
 
 	return votable->override_result != -EINVAL;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(is_override_vote_enabled_locked);
-#endif
 
 bool is_override_vote_enabled(struct votable *votable)
 {
@@ -223,9 +225,7 @@ bool is_override_vote_enabled(struct votable *votable)
 
 	return enable;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(is_override_vote_enabled);
-#endif
 
 /**
  * is_client_vote_enabled() -
@@ -253,9 +253,7 @@ bool is_client_vote_enabled_locked(struct votable *votable,
 
 	return votable->votes[client_id].enabled;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(is_client_vote_enabled_locked);
-#endif
 
 bool is_client_vote_enabled(struct votable *votable, const char *client_str)
 {
@@ -269,9 +267,7 @@ bool is_client_vote_enabled(struct votable *votable, const char *client_str)
 	unlock_votable(votable);
 	return enabled;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(is_client_vote_enabled);
-#endif
 
 /**
  * get_client_vote() -
@@ -302,9 +298,7 @@ int get_client_vote_locked(struct votable *votable, const char *client_str)
 
 	return votable->votes[client_id].value;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(get_client_vote_locked);
-#endif
 
 int get_client_vote(struct votable *votable, const char *client_str)
 {
@@ -318,9 +312,7 @@ int get_client_vote(struct votable *votable, const char *client_str)
 	unlock_votable(votable);
 	return value;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(get_client_vote);
-#endif
 
 /**
  * get_effective_result() -
@@ -352,9 +344,7 @@ int get_effective_result_locked(struct votable *votable)
 
 	return votable->effective_result;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(get_effective_result_locked);
-#endif
 
 int get_effective_result(struct votable *votable)
 {
@@ -368,9 +358,7 @@ int get_effective_result(struct votable *votable)
 	unlock_votable(votable);
 	return value;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(get_effective_result);
-#endif
 
 /**
  * get_effective_client() -
@@ -403,9 +391,7 @@ const char *get_effective_client_locked(struct votable *votable)
 
 	return get_client_str(votable, votable->effective_client_id);
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(get_effective_client_locked);
-#endif
 
 const char *get_effective_client(struct votable *votable)
 {
@@ -419,9 +405,7 @@ const char *get_effective_client(struct votable *votable)
 	unlock_votable(votable);
 	return client_str;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(get_effective_client);
-#endif
 
 /**
  * vote() -
@@ -535,9 +519,7 @@ out:
 	unlock_votable(votable);
 	return rc;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(vote);
-#endif
 
 /**
  * vote_override() -
@@ -592,9 +574,7 @@ out:
 	unlock_votable(votable);
 	return rc;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(vote_override);
-#endif
 
 int rerun_election(struct votable *votable)
 {
@@ -614,9 +594,7 @@ int rerun_election(struct votable *votable)
 	unlock_votable(votable);
 	return rc;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(rerun_election);
-#endif
 
 struct votable *find_votable(const char *name)
 {
@@ -645,9 +623,7 @@ out:
 	else
 		return NULL;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(find_votable);
-#endif
 
 static int force_active_get(void *data, u64 *val)
 {
@@ -850,9 +826,7 @@ struct votable *create_votable(const char *name,
 
 	return votable;
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(create_votable);
-#endif
 
 void destroy_votable(struct votable *votable)
 {
@@ -874,6 +848,55 @@ void destroy_votable(struct votable *votable)
 	kfree(votable->name);
 	kfree(votable);
 }
-#if !IS_ENABLED(CONFIG_QCOM_PMIC_VOTER)
 EXPORT_SYMBOL_GPL(destroy_votable);
+
+//add ipc log start
+#if 0
+void *charger_ipc_log_context = NULL;
+EXPORT_SYMBOL_GPL(charger_ipc_log_context);
+#define CHARGER_IPC_LOG_PAGES 128
+static int charger_ipc_logging_init(void)
+{
+	charger_ipc_log_context = ipc_log_context_create(CHARGER_IPC_LOG_PAGES,"charger", 0);
+	if (!charger_ipc_log_context) {
+		pr_err("Unable to create IPC log context\n");
+		return -EINVAL;
+ 	}
+	return 0;
+}
+static void charger_ipc_logging_deinit(void)
+{
+  	if (charger_ipc_log_context) {
+  		ipc_log_context_destroy(charger_ipc_log_context);
+ 		charger_ipc_log_context = NULL;
+  	}
+}
 #endif
+//add ipc log end
+/******************* Module Init ***********************************/
+
+static int __init qcom_pmic_voter_init(void)
+{
+#if 0
+	int ret = 0;
+	ret = charger_ipc_logging_init();
+	if(ret<0)
+		pr_err("failed to init ipc log\n");
+#endif
+	pr_err("%s enter.\n", __func__);
+	return 0;
+}
+
+static void __exit qcom_pmic_voter_exit(void)
+{
+	pr_err("%s enter.\n", __func__);
+#if 0
+	charger_ipc_logging_deinit();
+#endif
+}
+
+subsys_initcall(qcom_pmic_voter_init);
+module_exit(qcom_pmic_voter_exit);
+
+MODULE_DESCRIPTION("QCOM PMIC Voter Driver");
+MODULE_LICENSE("GPL");
