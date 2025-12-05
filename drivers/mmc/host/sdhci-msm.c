@@ -2298,10 +2298,16 @@ static int sdhci_msm_setup_vreg(struct sdhci_msm_host *msm_host,
 		vreg_table[1]->is_always_on = false;
 
 	/* Disable always_on regulator during reboot/shutdown */
+	#ifndef CONFIG_TARGET_PRODUCT_XUN
 	if (mmc->card &&
 		mmc->card->ext_csd.power_off_notification == EXT_CSD_NO_POWER_NOTIFICATION
 		&& mmc->caps & MMC_CAP_NONREMOVABLE)
 		return ret;
+	#else
+	if (mmc->card &&
+		mmc->card->ext_csd.power_off_notification == EXT_CSD_NO_POWER_NOTIFICATION)
+		vreg_table[1]->is_always_on = false;
+	#endif
 
 	if (!enable && !(mmc->caps & MMC_CAP_NONREMOVABLE)) {
 
@@ -4770,7 +4776,9 @@ static int sdhci_msm_setup_ice_clk(struct sdhci_msm_host *msm_host,
 
 static void sdhci_msm_set_caps(struct sdhci_msm_host *msm_host)
 {
+	#ifndef CONFIG_TARGET_PRODUCT_XUN
 	msm_host->mmc->caps |= MMC_CAP_AGGRESSIVE_PM;
+	#endif
 	msm_host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY | MMC_CAP_NEED_RSP_BUSY;
 }
 /* RUMI W/A for SD card */
