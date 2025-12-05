@@ -2217,3 +2217,13 @@ source "arch/arm64/gunyah/Kconfig"
 if CRYPTO
 source "arch/arm64/crypto/Kconfig"
 endif
+
+config ARCH_XIAOMI
+	bool "Xiaomi device"
+	help
+	  Support for Xiaomi products
+
+config TARGET_PRODUCT_XUN
+	bool "Target product is xun"
+	select ARCH_XIAOMI
+	default n
